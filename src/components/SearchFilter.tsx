@@ -1,15 +1,15 @@
+import { Action, usePostsDispatch } from "@/app/context/PostsContext";
 import { Input } from "@/components/ui/input";
+import { Dispatch } from "react";
 
-interface SearchFilterProps {
-  handleSearch: (text: string) => void;
-}
+const SearchFilter = () => {
+  const dispatch = usePostsDispatch() as Dispatch<Action>;
 
-const SearchFilter: React.FC<SearchFilterProps> = ({ handleSearch }) => {
   return (
     <div className="flex pl-5">
       <Input
         placeholder="Search ..."
-        onChange={(e) => handleSearch(e.target.value)}
+        onChange={(e) => dispatch({ type: "FILTER", search: e.target.value })}
       />
     </div>
   );

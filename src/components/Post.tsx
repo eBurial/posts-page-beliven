@@ -1,5 +1,5 @@
-import { IPost, usePostsDispatch } from "@/app/context/PostsContext";
-import { Star } from "lucide-react";
+import { Action, IPost, usePostsDispatch } from "@/app/context/PostsContext";
+import { Dispatch } from "react";
 import { IconContext } from "react-icons";
 import { FaStar } from "react-icons/fa";
 
@@ -8,7 +8,7 @@ interface PostProps {
 }
 
 const Post: React.FC<PostProps> = ({ post }) => {
-  const dispatch = usePostsDispatch();
+  const dispatch = usePostsDispatch() as Dispatch<Action>;
 
   return (
     <div className="flex p-4 mb-5 w-100 h-min-[250px] justify-between border-[1px] border-input rounded-md items-center hover:bg-input transition duration-150 ease-in-out">
@@ -29,9 +29,14 @@ const Post: React.FC<PostProps> = ({ post }) => {
           onClick={() =>
             dispatch({
               type: "LIKE",
+              label: post.isStarred ? "liked" : "unliked",
               post: {
                 ...post,
-                stars: post.isStarred ? post.stars + 1 : post.stars - 1,
+                stars: !post.isStarred
+                  ? post.stars + 1
+                  : post.stars - 1 < 0
+                  ? (post.stars = 0)
+                  : (post.stars -= 1),
                 isStarred: !post.isStarred,
               },
             })
@@ -41,9 +46,9 @@ const Post: React.FC<PostProps> = ({ post }) => {
             value={{ color: "#915eff", className: "contactIcon" }}
           >
             {post.isStarred && (
-              <FaStar className="!text-[white] hover:!text-[cyan]" />
+              <FaStar className="!text-[cyan] hover:!text-[cyan]" />
             )}
-            {!post.isStarred && <FaStar className="!text-[cyan] " />}
+            {!post.isStarred && <FaStar className="!text-[white] " />}
           </IconContext.Provider>
         </div>
       </div>
