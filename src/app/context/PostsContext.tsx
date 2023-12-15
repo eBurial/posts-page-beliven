@@ -78,7 +78,7 @@ const PostsContext = createContext<PostsContextType | null>({
   dispatch: () => null,
 });
 
-const getInitialState = () => {
+const getInitialState = (): PostsState => {
   let storagePosts = localStorage.getItem("posts");
   let parsedPosts: IPost[] = initialPosts.posts; // Default value
 
@@ -93,6 +93,7 @@ const getInitialState = () => {
   return {
     filtered: null,
     posts: parsedPosts,
+    show_leaderboard: false,
   };
 };
 const PostsDispatchContext = createContext<Dispatch<Action> | null>(null);
