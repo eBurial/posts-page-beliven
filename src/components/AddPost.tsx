@@ -62,7 +62,7 @@ const AddPost = () => {
                       name: name,
                       description: desc,
                       createdAt: new Date().toDateString(),
-                      stars: 119,
+                      stars: 0,
                       isStarred: false,
                     },
                   });

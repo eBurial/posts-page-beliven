@@ -1,6 +1,7 @@
 "use client";
 
 import { toast } from "@/components/ui/use-toast";
+import { init } from "next/dist/compiled/webpack/webpack";
 import {
   Dispatch,
   ReactNode,
@@ -9,6 +10,7 @@ import {
   useContext,
   useEffect,
   useReducer,
+  useState,
 } from "react";
 
 export interface IPost {
@@ -54,7 +56,7 @@ const initialPosts: PostsState = {
       name: "Bull project",
       description: "Ipsum lorem sit",
       createdAt: "2020-09-10",
-      stars: 60,
+      stars: 120,
       isStarred: false,
     },
     {
@@ -62,7 +64,7 @@ const initialPosts: PostsState = {
       name: "Greek project",
       description: "Felicit ipsum dolor",
       createdAt: "2020-08-12",
-      stars: 80,
+      stars: 119,
       isStarred: false,
     },
   ],
@@ -79,14 +81,15 @@ const PostsContext = createContext<PostsContextType | null>({
 });
 
 const getInitialState = (): PostsState => {
-  let storagePosts = localStorage.getItem("posts");
   let parsedPosts: IPost[] = initialPosts.posts; // Default value
 
-  if (storagePosts) {
-    try {
+  if (typeof window !== "undefined") {
+    // Check if window (and thus localStorage) is available
+    let storagePosts = localStorage.getItem("posts");
+    if (storagePosts) {
       parsedPosts = JSON.parse(storagePosts) || initialPosts;
-    } catch (error) {
-      console.error("Error parsing posts from local storage:", error);
+    } else {
+      localStorage.setItem("posts", JSON.stringify(initialPosts.posts));
     }
   }
 
@@ -101,12 +104,33 @@ const PostsDispatchContext = createContext<Dispatch<Action> | null>(null);
 export const PostsProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [state, dispatch] = useReducer(postsReducer, getInitialState());
+  const [state, dispatch] = useReducer(postsReducer, {
+    posts: [],
+    filtered: null,
+    show_leaderboard: false,
+  });
+  const [firstLoad, setFirstLoad] = useState(false);
   useEffect(() => {
-    // Store posts in storage when they changes
-    localStorage.setItem("posts", JSON.stringify(state.posts));
-    //Update current filtered values
-  }, [state.posts]);
+    if (localStorage.getItem("posts") && firstLoad) {
+      // Store posts in storage when they changes
+      localStorage.setItem("posts", JSON.stringify(state.posts));
+    }
+  }, [state.posts, firstLoad]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const initialState = await getInitialState();
+        dispatch({ type: "SET_INITIAL_STATE", posts: initialState.posts });
+      } catch (error) {
+        console.error("Error fetching initial state:", error);
+      }
+
+      setFirstLoad(true);
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <PostsContext.Provider value={{ state: state, dispatch }}>
@@ -149,10 +173,16 @@ export type Action =
   | {
       type: "ADD_POST";
       post: IPost;
+    }
+  | {
+      type: "SET_INITIAL_STATE";
+      posts: IPost[];
     };
 
 export const postsReducer: Reducer<PostsState, Action> = (state, action) => {
   switch (action.type) {
+    case "SET_INITIAL_STATE":
+      return { ...state, posts: action.posts };
     case "LIKE": {
       toast({
         title: "Post",
