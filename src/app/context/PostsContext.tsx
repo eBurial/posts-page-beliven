@@ -297,6 +297,12 @@ export const postsReducer: Reducer<PostsState, Action> = (state, action) => {
       return {
         ...state,
         posts: [...state.posts, action.post],
+        ...(state.filtered &&
+          state.filtered?.length > 0 && {
+            filtered: state?.posts.filter(
+              (x) => state.filtered && state.filtered.includes(x)
+            ),
+          }),
       };
     }
 
