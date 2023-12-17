@@ -225,6 +225,7 @@ export const postsReducer: Reducer<PostsState, Action> = (state, action) => {
           })
           .slice(0, 3);
       }
+
       // Return updated post
       return {
         ...state,
@@ -244,6 +245,9 @@ export const postsReducer: Reducer<PostsState, Action> = (state, action) => {
             p.description.toLowerCase().includes(action.search.toLowerCase())
         ),
       };
+      if (state.show_leaderboard) {
+        res.filtered = res.filtered.slice(0, 3);
+      }
       return res;
     }
     case "SORT": {
