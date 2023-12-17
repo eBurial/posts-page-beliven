@@ -12,8 +12,8 @@ const Post: React.FC<PostProps> = ({ post }) => {
 
   return (
     <div className="flex p-4 mb-5 w-100 h-min-[250px] justify-between border-[1px] border-input rounded-md items-center hover:bg-input transition duration-150 ease-in-out">
-      <div className="flex items-center">
-        <div className="flex flex-col min-w-[200px]">
+      <div className="flex-col md:flex-row items-center">
+        <div className="flex flex-col min-w-0 md:min-w-[200px]">
           <span className="text-sm">{post.name}</span>
           <span className="text-gray-500 text-xs"> {post.description} </span>
         </div>

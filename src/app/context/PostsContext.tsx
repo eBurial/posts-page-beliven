@@ -149,6 +149,24 @@ export const usePostsDispatch = () => {
   return useContext(PostsDispatchContext);
 };
 
+const sortBy: (
+  posts: IPost[],
+  field: keyof IPost,
+  direction: "ASC" | "DESC"
+) => IPost[] = (posts, field, direction) => {
+  return posts.sort((postA, postB) => {
+    const valueA = postA[field];
+    const valueB = postB[field];
+    let comparison = 0;
+    if (valueA > valueB) {
+      comparison = 1;
+    } else if (valueA < valueB) {
+      comparison = -1;
+    }
+    return direction === "DESC" ? comparison * -1 : comparison;
+  });
+};
+
 export type Action =
   | {
       type: "LIKE";
@@ -211,19 +229,7 @@ export const postsReducer: Reducer<PostsState, Action> = (state, action) => {
       // If showing leaderboard sort most starred posts by number of stars
       if (state.show_leaderboard && filtered) {
         // Sort by stars
-        filtered = filtered
-          .sort((postA, postB) => {
-            const valueA = postA.stars;
-            const valueB = postB.stars;
-            let comparison = 0;
-            if (valueA > valueB) {
-              comparison = 1;
-            } else if (valueA < valueB) {
-              comparison = -1;
-            }
-            return comparison * -1;
-          })
-          .slice(0, 3);
+        filtered = sortBy(state.posts, "stars", "DESC").slice(0, 3);
       }
 
       // Return updated post
@@ -246,26 +252,18 @@ export const postsReducer: Reducer<PostsState, Action> = (state, action) => {
         ),
       };
       if (state.show_leaderboard) {
-        res.filtered = res.filtered.slice(0, 3);
+        res.filtered = sortBy(state.posts, "stars", "DESC").slice(0, 3);
       }
       return res;
     }
     case "SORT": {
       return {
         ...state,
-        posts: state.posts.sort((postA, postB) => {
-          const valueA = postA[action.sort.field];
-          const valueB = postB[action.sort.field];
-          let comparison = 0;
-          if (valueA > valueB) {
-            comparison = 1;
-          } else if (valueA < valueB) {
-            comparison = -1;
-          }
-          return action.sort.direction === "desc"
-            ? comparison * -1
-            : comparison;
-        }),
+        posts: sortBy(
+          state.posts,
+          action.sort.field,
+          action.sort.direction as "ASC" | "DESC"
+        ),
         ...(state.filtered &&
           state.filtered?.length > 0 && {
             filtered: state?.posts.filter(
@@ -277,19 +275,7 @@ export const postsReducer: Reducer<PostsState, Action> = (state, action) => {
     case "MOST_STARRED": {
       let postsToShow = null;
       if (action.show) {
-        postsToShow = state.posts
-          .sort((postA, postB) => {
-            const valueA = postA.stars;
-            const valueB = postB.stars;
-            let comparison = 0;
-            if (valueA > valueB) {
-              comparison = 1;
-            } else if (valueA < valueB) {
-              comparison = -1;
-            }
-            return action.show ? comparison * -1 : comparison;
-          })
-          .slice(0, 3);
+        postsToShow = sortBy(state.posts, "stars", "DESC").slice(0, 3);
       }
       return {
         ...state,

@@ -16,7 +16,7 @@ const SearchFilter = () => {
     dispatch({ type: "FILTER", search: searchText });
   }, [state.posts, searchText, dispatch]);
   return (
-    <div className="flex pl-5">
+    <div className="flex pl-0 md:pl-5">
       <Input
         placeholder="Search ..."
         onChange={(e) => setSearchText((prev) => (prev = e.target.value))}

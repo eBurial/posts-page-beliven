@@ -30,14 +30,16 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col">
-      <div className="flex w-100 flex-col justify-between items-center sm:flex-row">
-        <p className="text-sm flex w-100">
-          <b className="mr-2">
-            {state.filtered?.length || state.posts?.length || 0}
-          </b>
-          posts
-        </p>
-        <div className="flex">
+      <div className="flex w-full flex-col justify-between items-start md:items-center sm:flex-row">
+        <div className="flex  my-2 md:mt-0  items-start justify-start">
+          <p className="text-sm ">
+            <b className="mr-2">
+              {state.filtered?.length || state.posts?.length || 0}
+            </b>
+            posts
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-4 md:gap-0 ">
           <AddPost />
           <Button
             variant="outline"
@@ -63,19 +65,22 @@ export default function Home() {
               });
             }}
           >
-            <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="Filter by" />
-            </SelectTrigger>
+            {!state.show_leaderboard && (
+              <SelectTrigger className="w-[180px]">
+                <SelectValue placeholder="Order by" />
+              </SelectTrigger>
+            )}
+
             <SelectContent>
               <SelectGroup>
-                <SelectLabel>Filter by</SelectLabel>
-                <SelectItem value="name-asc">Name ( asc ) </SelectItem>
-                <SelectItem value="name-desc">Name ( desc ) </SelectItem>
-                <SelectItem value="description-asc">
-                  Description ( asc ){" "}
+                <SelectLabel>Sort by</SelectLabel>
+                <SelectItem value="name-ASC">Name ( ASC ) </SelectItem>
+                <SelectItem value="name-DESC">Name ( DESC ) </SelectItem>
+                <SelectItem value="description-ASC">
+                  Description ( ASC )
                 </SelectItem>
-                <SelectItem value="description-desc">
-                  Description ( desc ){" "}
+                <SelectItem value="description-DESC">
+                  Description ( DESC )
                 </SelectItem>
               </SelectGroup>
             </SelectContent>
