@@ -56,7 +56,7 @@ const initialPosts: PostsState = {
       name: "Bull project",
       description: "Ipsum lorem sit",
       createdAt: "2020-09-10",
-      stars: 120,
+      stars: 60,
       isStarred: false,
     },
     {
@@ -64,7 +64,7 @@ const initialPosts: PostsState = {
       name: "Greek project",
       description: "Felicit ipsum dolor",
       createdAt: "2020-08-12",
-      stars: 119,
+      stars: 10,
       isStarred: false,
     },
   ],
@@ -84,13 +84,17 @@ const getInitialState = (): PostsState => {
   let parsedPosts: IPost[] = initialPosts.posts; // Default value
 
   if (typeof window !== "undefined") {
-    // Check if window (and thus localStorage) is available
-    let storagePosts = localStorage.getItem("posts");
-    if (storagePosts) {
-      parsedPosts = JSON.parse(storagePosts) || initialPosts;
-    } else {
-      localStorage.setItem("posts", JSON.stringify(initialPosts.posts));
+    try {
+      let storagePosts = localStorage.getItem("posts");
+      if (storagePosts) {
+        parsedPosts = JSON.parse(storagePosts) || initialPosts;
+      } else {
+        localStorage.setItem("posts", JSON.stringify(initialPosts.posts));
+      }
+    } catch (errror) {
+      console.error("Error fetching local storage");
     }
+    // Check if window (and thus localStorage) is available
   }
 
   return {
@@ -148,15 +152,25 @@ export const usePosts = () => {
 export const usePostsDispatch = () => {
   return useContext(PostsDispatchContext);
 };
-
+/**
+ *
+ * @param posts,list of posts
+ * @param field, field of post
+ * @param direction, the direction of sorting
+ * @returns a list of posts sorted by 'field' in the specified 'direction'
+ */
 const sortBy: (
   posts: IPost[],
   field: keyof IPost,
   direction: "ASC" | "DESC"
 ) => IPost[] = (posts, field, direction) => {
   return posts.sort((postA, postB) => {
-    const valueA = postA[field];
-    const valueB = postB[field];
+    let valueA = postA[field];
+    let valueB = postB[field];
+    if (field === "createdAt") {
+      valueA = Date.parse(valueA as string);
+      valueB = Date.parse(valueB as string);
+    }
     let comparison = 0;
     if (valueA > valueB) {
       comparison = 1;

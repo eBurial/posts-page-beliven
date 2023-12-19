@@ -76,11 +76,11 @@ export default function Home() {
                 <SelectLabel>Sort by</SelectLabel>
                 <SelectItem value="name-ASC">Name ( ASC ) </SelectItem>
                 <SelectItem value="name-DESC">Name ( DESC ) </SelectItem>
-                <SelectItem value="description-ASC">
-                  Description ( ASC )
+                <SelectItem value="createdAt-ASC">
+                  Creation date ( ASC ){" "}
                 </SelectItem>
-                <SelectItem value="description-DESC">
-                  Description ( DESC )
+                <SelectItem value="createdAt-DESC">
+                  Creation date ( DESC ){" "}
                 </SelectItem>
               </SelectGroup>
             </SelectContent>

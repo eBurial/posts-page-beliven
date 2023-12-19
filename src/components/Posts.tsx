@@ -4,9 +4,7 @@ import { useEffect } from "react";
 
 const Posts = () => {
   const { state } = usePosts() as PostsContextType;
-  useEffect(() => {
-    console.log(state);
-  }, [state]);
+
   return (
     <div>
       {state && state?.filtered === null
