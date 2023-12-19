@@ -29,7 +29,7 @@ const Post: React.FC<PostProps> = ({ post }) => {
           onClick={() =>
             dispatch({
               type: "LIKE",
-              label: post.isStarred ? "liked" : "unliked",
+              label: !post.isStarred ? "liked" : "unliked",
               post: {
                 ...post,
                 stars: !post.isStarred
