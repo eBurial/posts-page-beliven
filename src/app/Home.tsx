@@ -39,6 +39,7 @@ export default function Home() {
             posts
           </p>
         </div>
+
         <div className="flex flex-wrap gap-4 md:gap-0 ">
           <AddPost />
           <Button

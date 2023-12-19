@@ -21,9 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Header />
-        <PostsProvider>
-          <main className="container">{children}</main>
-        </PostsProvider>
+        <main className="container">{children}</main>
       </body>
     </html>
   );
